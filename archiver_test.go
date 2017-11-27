@@ -73,7 +73,7 @@ func (s *ArchiverSuite) SetupTest() {
 	s.tx = rrepository.NewSivaRootedTransactioner(rrepository.NewLocalCopier(s.rootedFs, s.bucket), s.txFs)
 
 	ls, err := lock.NewLocal().NewSession(&lock.SessionConfig{
-		Timeout: time.Minute * 1,
+		Timeout: defaultTimeout,
 	})
 	s.NoError(err)
 
