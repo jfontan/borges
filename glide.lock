@@ -1,5 +1,5 @@
-hash: da9fec73efc54d52535714dfc7ba6c4cac8e87886fbd2e3c1110b6ecadc85920
-updated: 2017-11-27T15:13:37.896581613+01:00
+hash: 0ba4dee9c27f2ab12d38850373155d13965080fc3300adb960036c02bc02ba52
+updated: 2017-11-29T17:21:40.684382596+01:00
 imports:
 - name: github.com/colinmarc/hdfs
   version: 69e5098fa51e208a466aef9a5283b0101e6e4f54
@@ -42,7 +42,7 @@ imports:
 - name: github.com/lann/ps
   version: 62de8c46ede02a7675c4c79c84883eb164cb71e3
 - name: github.com/lib/pq
-  version: 8c6ee72f3e6bcb1542298dd5f76cb74af9742cec
+  version: 83612a56d3dd153a94a629cd64925371c9adad78
   subpackages:
   - oid
 - name: github.com/Masterminds/squirrel
@@ -54,7 +54,7 @@ imports:
 - name: github.com/mitchellh/go-homedir
   version: b8bc1bf767474819792c23f32d8286a45736f1c6
 - name: github.com/oklog/ulid
-  version: eb55c82d96c77e196b269cb2ae3afda150454de7
+  version: b38f8fcd3b93fd0e63dae168550d51a485185d60
 - name: github.com/pkg/errors
   version: f15c970de5b76fac0b59abb32d62c17cc7bed265
 - name: github.com/pmezard/go-difflib
@@ -110,12 +110,12 @@ imports:
   - lex/httplex
   - trace
 - name: golang.org/x/sys
-  version: bf42f188b9bc6f2cf5b8ee5a912ef1aedd0eba4c
+  version: e48874b42435b4347fc52bdee0424a52abc974d7
   subpackages:
   - unix
   - windows
 - name: golang.org/x/text
-  version: 88f656faf3f37f690df1a32515b479415e1a6769
+  version: 572a2b141f625f4360cf42a41a43622067e0510b
   subpackages:
   - secure/bidirule
   - transform
@@ -133,7 +133,7 @@ imports:
   - internal/modules
   - internal/remote_api
 - name: google.golang.org/genproto
-  version: 11c7f9e547da6db876260ce49ea7536985904c9b
+  version: 7f0da29060c682909f650ad8ed4e515bd74fa12a
   subpackages:
   - googleapis/rpc/status
 - name: google.golang.org/grpc
@@ -157,7 +157,7 @@ imports:
 - name: gopkg.in/inconshreveable/log15.v2
   version: 0decfc6c20d9ca0ad143b0e89dcaa20f810b4fb3
 - name: gopkg.in/src-d/core-retrieval.v0
-  version: 648fed91f1198add548d110f221d8dd507b38ce7
+  version: ef12490e691bfcc10a512d02a335217d01e97509
   repo: https://github.com/src-d/core-retrieval.git
   subpackages:
   - model
