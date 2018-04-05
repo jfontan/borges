@@ -121,6 +121,10 @@ func main() {
 		panic(err)
 	}
 
+	if _, err := parser.AddCommand(updaterCmdName, updaterCmdShortDesc, updaterCmdLongDesc, new(updaterCmd)); err != nil {
+		panic(err)
+	}
+
 	if _, err := parser.Parse(); err != nil {
 		if err, ok := err.(*flags.Error); ok {
 			if err.Type == flags.ErrHelp {
