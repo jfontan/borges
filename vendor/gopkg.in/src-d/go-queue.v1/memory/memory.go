@@ -1,6 +1,7 @@
 package memory
 
 import (
+	"io"
 	"sync"
 	"time"
 
@@ -13,7 +14,7 @@ func init() {
 	})
 }
 
-// Broker is a in-memory implementation of brocker.
+// Broker is a in-memory implementation of Broker.
 type Broker struct {
 	queues map[string]queue.Queue
 }
@@ -74,7 +75,7 @@ func (q *Queue) PublishDelayed(j *queue.Job, delay time.Duration) error {
 	return nil
 }
 
-// RepublishBuried implement the Queue interface.
+// RepublishBuried implements the Queue interface.
 func (q *Queue) RepublishBuried(conditions ...queue.RepublishConditionFunc) error {
 	for _, job := range q.buriedJobs {
 		if queue.RepublishConditions(conditions).Comply(job) {
@@ -161,7 +162,7 @@ func (i *JobIter) next() (*queue.Job, error) {
 	i.Lock()
 	defer i.Unlock()
 	if len(i.q.jobs) <= i.q.idx {
-		return nil, nil
+		return nil, io.EOF
 	}
 
 	j := i.q.jobs[i.q.idx]

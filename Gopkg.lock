@@ -474,12 +474,12 @@
   revision = "bed6b25004fcbc1b034608f01d478aca4135b865"
 
 [[projects]]
-  digest = "1:c057dcdb0f2891f49cc48a6faa3d39efee510b040c6aaa6341e71a79a759ea12"
+  digest = "1:b3d2950d0f3fb867cb7a65c862768a28779de63a3214102218e070759f4f1c4b"
   name = "gopkg.in/src-d/go-billy-siva.v4"
   packages = ["."]
   pruneopts = "UT"
-  revision = "cd8ce6d3364eb9355e1f63649174b26901fb43c4"
-  version = "v4.2.1"
+  revision = "2996737a8fd9da56f864a9f420a1df5eeb50f0e1"
+  version = "v4.2.2"
 
 [[projects]]
   digest = "1:38a7affd09d9ae9111aa4e4406216b27ead3c798d38e11572757d7f37b92e631"
@@ -599,7 +599,7 @@
   version = "v1.0.1"
 
 [[projects]]
-  digest = "1:3be17174dc9d8ea716d763f20eb160171f179469b51f1a8f5eb00ef2c0b04ab5"
+  digest = "1:8bd8df4558c3d6e4be534eb740d74f5f543d2733faa1ddea932da046c72f3437"
   name = "gopkg.in/src-d/go-queue.v1"
   packages = [
     ".",
@@ -607,16 +607,16 @@
     "memory",
   ]
   pruneopts = "UT"
-  revision = "eb1b2b056253e95af1ce0f84bd1e92616a3a80d2"
-  version = "v1.0.2"
+  revision = "3eb0eac8758069e896ea90ae8cf8afb41f1dedc8"
+  version = "v1.0.3"
 
 [[projects]]
-  digest = "1:dc4a92e4e85a5d281406fb696c2fb14d1fdbc13a4f7e6ff7c6474f64c18db3da"
+  digest = "1:2c8a78e7d67c953a57db8a8aea1031a5bc346377e4ffdaaee5fcdbf290c3911a"
   name = "gopkg.in/src-d/go-siva.v1"
   packages = ["."]
   pruneopts = "UT"
-  revision = "b4cd504f9d6e57728058609e4540e931fbd41220"
-  version = "v1.1.3"
+  revision = "a31824b47640e97aa5958448aa7ac6615aa44234"
+  version = "v1.2.0"
 
 [[projects]]
   digest = "1:a7438a3f7f92a25e8fb1d67de9ff4fc3355b86249999bf131092b76823db13e6"

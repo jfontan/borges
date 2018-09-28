@@ -43,7 +43,7 @@
 
 [[override]]
   name = "gopkg.in/src-d/go-billy-siva.v4"
-  version = "4.2.1"
+  version = "4.2.2"
 
 [prune]
   unused-packages = true
