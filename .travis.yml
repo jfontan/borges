@@ -1,8 +1,9 @@
 language: go
 
 go:
-  - 1.10.x
-  - tip
+  - 1.11.x
+
+go_import_path: github.com/src-d/borges
 
 matrix:
   fast_finish: true
@@ -31,7 +32,7 @@ before_deploy:
   - make packages
 
 deploy:
-  go: 1.10.x
+  go: 1.11.x
   provider: releases
   api_key: $GITHUB_TOKEN
   file_glob: true
