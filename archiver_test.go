@@ -20,7 +20,7 @@ import (
 	"gopkg.in/src-d/core-retrieval.v0/model"
 	"gopkg.in/src-d/core-retrieval.v0/repository"
 	"gopkg.in/src-d/core-retrieval.v0/test"
-	"gopkg.in/src-d/go-billy-siva.v4"
+	sivafs "gopkg.in/src-d/go-billy-siva.v4"
 	billy "gopkg.in/src-d/go-billy.v4"
 	"gopkg.in/src-d/go-billy.v4/osfs"
 	fixtures "gopkg.in/src-d/go-git-fixtures.v3"
@@ -447,10 +447,92 @@ func (s *ArchiverSuite) TestIsProcessableRepository() {
 	s.Assertions.True(modelRepo.Status == model.Pending)
 }
 
+func (s *ArchiverSuite) TestSymbolicReference() {
+	for _, ct := range ChangesFixtures {
+		if ct.OldReferences == nil {
+			continue
+		}
+
+		s.T().Run(ct.TestName, func(t *testing.T) {
+			require := require.New(t)
+
+			var rid kallax.ULID
+			// r, err := ct.OldRepository()
+			r, err := ct.NewRepository()
+			require.NoError(err)
+			var hash model.SHA1
+			err = withInProcRepository(hash, r, func(url string) error {
+				rid = s.newRepositoryModel(url)
+
+				err := r.Storer.SetReference(
+					plumbing.NewSymbolicReference("refs/heads/symbolic", "refs/heads/master"))
+				if err != nil {
+					return err
+				}
+
+				master, err := r.Reference("refs/heads/master", false)
+				require.NoError(err)
+
+				r.Storer.SetReference(
+					plumbing.NewHashReference("refs/heads/merda", master.Hash()))
+
+				return s.a.Do(context.TODO(), &Job{RepositoryID: uuid.UUID(rid)})
+			})
+			require.NoError(err)
+
+			name := plumbing.ReferenceName(
+				fmt.Sprintf("refs/heads/symbolic/%s", rid.String()))
+			target := plumbing.ReferenceName(
+				fmt.Sprintf("refs/heads/master/%s", rid.String()))
+
+			m, err := s.store.Get(rid)
+			require.NoError(err)
+
+			inits := make(map[plumbing.Hash]bool)
+			for _, ref := range m.References {
+				inits[plumbing.Hash(ref.Init)] = true
+			}
+
+			var found = false
+			for init := range inits {
+				tx, err := s.a.RootedTransactioner.Begin(context.TODO(), init)
+				require.NoError(err)
+				defer tx.Rollback()
+
+				repo, err := git.Open(tx.Storer(), nil)
+				require.NoError(err)
+
+				refs, _ := repo.References()
+				refs.ForEach(func(r *plumbing.Reference) error {
+					println("ref", r.Name())
+					return nil
+				})
+
+				ref, err := repo.Reference(name, false)
+				if err == nil {
+					require.Equal(target, ref.Target())
+					found = true
+					break
+				}
+			}
+
+			require.True(found, "symbolic reference not found")
+
+		})
+	}
+}
+
+type cArchiver struct {
+	m *model.Repository
+	a *Archiver
+	s RepositoryStore
+	r *git.Repository
+}
+
 func customArchiver(
 	t *testing.T,
 	rootedFs, txFs, tmpFs billy.Filesystem,
-) (*model.Repository, *Archiver, RepositoryStore) {
+) cArchiver {
 	t.Helper()
 	require := require.New(t)
 
@@ -479,8 +561,12 @@ func customArchiver(
 		ls, defaultTimeout, copier)
 
 	repoFixture := fixtures.ByTag("worktree").One()
-	repoPath := repoFixture.Worktree().Root()
+	repoFS := repoFixture.Worktree()
+	repoPath := repoFS.Root()
 	repoURL := fmt.Sprintf("file://%s", repoPath)
+	storage := filesystem.NewStorage(repoFS, nil)
+	repo, err := git.Open(storage, repoFS)
+	require.NoError(err)
 
 	mr := model.NewRepository()
 	mr.Endpoints = append(mr.Endpoints, repoURL)
@@ -488,7 +574,7 @@ func customArchiver(
 	require.NoError(err)
 	require.False(updated)
 
-	return mr, a, store
+	return cArchiver{m: mr, a: a, s: store, r: repo}
 }
 
 func TestDeleteTmpOnError(t *testing.T) {
@@ -512,36 +598,36 @@ func TestDeleteTmpOnError(t *testing.T) {
 	require.NoError(err)
 
 	bfs := NewBrokenFS(txFs)
-	r, a, store := customArchiver(t, rootedFs, bfs, tmpFs)
+	a := customArchiver(t, rootedFs, bfs, tmpFs)
 
 	// first time error because of BrokenFS, uses fastpath
-	err = a.Do(context.TODO(), &Job{RepositoryID: uuid.UUID(r.ID)})
+	err = a.a.Do(context.TODO(), &Job{RepositoryID: uuid.UUID(a.m.ID)})
 	require.Error(err)
 
 	// deactivate BrokenFS to let it push changes
 	bfs.MaxCount = -1
-	err = a.Do(context.TODO(), &Job{RepositoryID: uuid.UUID(r.ID)})
+	err = a.a.Do(context.TODO(), &Job{RepositoryID: uuid.UUID(a.m.ID)})
 	require.NoError(err)
 
 	// delete references so it needs to push
 	err = deleteReferences(
 		rootedFs,
-		r.ID.String(),
+		a.m.ID.String(),
 		"b029517f6300c2da0f4b651b8642506cd6aaf45d")
 	require.NoError(err)
 
 	// delete one reference from database so push is done
-	r, err = store.Get(r.ID)
+	r, err := a.s.Get(a.m.ID)
 	require.NoError(err)
-	require.Len(r.References, 2)
+	require.Len(a.m.References, 2)
 
 	r.References = r.References[1:]
-	err = store.UpdateFetched(r, time.Now())
+	err = a.s.UpdateFetched(r, time.Now())
 	require.NoError(err)
 
 	// activate BrokenFS, test push
 	bfs.MaxCount = 4
-	err = a.Do(context.TODO(), &Job{RepositoryID: uuid.UUID(r.ID)})
+	err = a.a.Do(context.TODO(), &Job{RepositoryID: uuid.UUID(a.m.ID)})
 	require.Error(err)
 
 	// After an error the temporary repository should be deleted.
@@ -600,9 +686,10 @@ func TestMissingSivaFile(t *testing.T) {
 	tmpFs, err := fs.Chroot("tmp")
 	require.NoError(err)
 
-	r, a, store := customArchiver(t, rootedFs, txFs, tmpFs)
+	// r, a, store, _ := customArchiver(t, rootedFs, txFs, tmpFs)
+	a := customArchiver(t, rootedFs, txFs, tmpFs)
 
-	err = a.Do(context.TODO(), &Job{RepositoryID: uuid.UUID(r.ID)})
+	err = a.a.Do(context.TODO(), &Job{RepositoryID: uuid.UUID(a.m.ID)})
 	require.NoError(err)
 
 	// rename siva file to *.tmp so copier is not able to find it
@@ -615,11 +702,11 @@ func TestMissingSivaFile(t *testing.T) {
 	// add reference with its init commit
 	ref := model.NewReference()
 	ref.Init = model.NewSHA1("b029517f6300c2da0f4b651b8642506cd6aaf45d")
-	r.References = []*model.Reference{ref}
-	err = store.UpdateFetched(r, time.Now())
+	a.m.References = []*model.Reference{ref}
+	err = a.s.UpdateFetched(a.m, time.Now())
 	require.NoError(err)
 
-	err = a.Do(context.TODO(), &Job{RepositoryID: uuid.UUID(r.ID)})
+	err = a.a.Do(context.TODO(), &Job{RepositoryID: uuid.UUID(a.m.ID)})
 	require.Error(err)
 
 	// the error that caused the job to fail is lost in
@@ -637,7 +724,7 @@ func TestMissingSivaFile(t *testing.T) {
 		}
 	}
 
-	url := r.Endpoints[0]
+	url := a.m.Endpoints[0]
 	url = strings.TrimPrefix(url, "file://")
 	g, err := git.PlainOpen(url)
 	require.NoError(err)
@@ -664,8 +751,12 @@ func TestMissingSivaFile(t *testing.T) {
 	})
 	require.NoError(err)
 
-	err = a.Do(context.TODO(), &Job{RepositoryID: uuid.UUID(r.ID)})
+	err = a.a.Do(context.TODO(), &Job{RepositoryID: uuid.UUID(a.m.ID)})
 	require.NoError(err)
+}
+
+func TestSymbolicReference(t *testing.T) {
+
 }
 
 func NewBrokenFS(fs billy.Filesystem) *BrokenFS {
