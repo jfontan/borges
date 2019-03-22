@@ -1,4 +1,4 @@
-module github.com/src-d/borges
+module github.com/jfontan/borges
 
 go 1.12
 

@@ -8,10 +8,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/src-d/borges"
-	"github.com/src-d/go-borges/siva"
+	"github.com/jfontan/borges"
 
 	goborges "github.com/src-d/go-borges"
+	"github.com/src-d/go-borges/siva"
 	"gopkg.in/src-d/go-billy.v4"
 	"gopkg.in/src-d/go-billy.v4/osfs"
 	"gopkg.in/src-d/go-git.v4"
