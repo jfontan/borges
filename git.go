@@ -120,15 +120,6 @@ func (b *temporaryRepositoryCloner) Clone(
 		return nil, err
 	}
 
-	// rCfg := &config.RemoteConfig{
-	// 	Name: id,
-	// 	URLs: []string{endpoint},
-	// 	Fetch: []config.RefSpec{
-	// 		FetchHEADSpec(id),
-	// 		FetchRefSpec(id),
-	// 	}}
-
-	// remote, err := r.CreateRemote(rCfg)
 	remote, err := CreateRemote(r, id, endpoint)
 	if err != nil {
 		println("error create remote")
