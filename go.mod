@@ -10,7 +10,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.10.0 // indirect
 	github.com/oklog/ulid v1.3.1 // indirect
 	github.com/satori/go.uuid v1.2.0 // indirect
-	github.com/src-d/go-borges v0.0.0-00010101000000-000000000000
+	github.com/src-d/go-borges v0.0.0-20190320075114-994b73188b5c
 	google.golang.org/appengine v1.5.0 // indirect
 	gopkg.in/src-d/core-retrieval.v0 v0.0.0-20181128152223-27a526a7da6f
 	gopkg.in/src-d/go-billy-siva.v4 v4.3.0 // indirect
