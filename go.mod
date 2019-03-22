@@ -21,7 +21,7 @@ require (
 	gopkg.in/src-d/go-siva.v1 v1.4.0 // indirect
 )
 
-replace github.com/src-d/go-borges => github.com/jfontan/go-borges v0.0.0-20190322171926-dd86770f6351
+replace github.com/src-d/go-borges => github.com/jfontan/go-borges v0.0.0-20190322174843-3518586cba95
 
 replace gopkg.in/src-d/go-git.v4 => github.com/jfontan/go-git v0.0.0-20190321162938-b40af0bc1b6d
 

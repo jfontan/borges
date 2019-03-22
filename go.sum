@@ -24,8 +24,8 @@ github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99/go.mod h1:1lJo3i
 github.com/jessevdk/go-flags v1.4.0/go.mod h1:4FA24M0QyGHXBuZZK/XkWh8h0e1EYbRYJSGM75WSRxI=
 github.com/jfontan/go-billy-siva v3.0.1-0.20190322160634-e30e37634e2a+incompatible h1:QRP0mjiMXSRTmmmMZxwZXBlzjB7fChIyFkXEtiH/KrI=
 github.com/jfontan/go-billy-siva v3.0.1-0.20190322160634-e30e37634e2a+incompatible/go.mod h1:pb35tHNVEf9gwZlQLzv7QxggBvXt6NXTKIpADiFxj6g=
-github.com/jfontan/go-borges v0.0.0-20190322171926-dd86770f6351 h1:I/yA2ylGeDEVesvSoDUepb0WoMBtM/gt2MqxeP0b2Uc=
-github.com/jfontan/go-borges v0.0.0-20190322171926-dd86770f6351/go.mod h1:8XsSCzQbT7Ly4qP7j34xtbgRZ/gzcuUAqb6I75MIAKE=
+github.com/jfontan/go-borges v0.0.0-20190322174843-3518586cba95 h1:elx7urkPhQL9pBKOBVZcCYoSOXKoHhPamWakESVV2tk=
+github.com/jfontan/go-borges v0.0.0-20190322174843-3518586cba95/go.mod h1:8XsSCzQbT7Ly4qP7j34xtbgRZ/gzcuUAqb6I75MIAKE=
 github.com/jfontan/go-git v0.0.0-20190321162938-b40af0bc1b6d h1:aCvMOFF61QMwL41QHaQimvsJ8Rm/R1OCzFTsdKojg/4=
 github.com/jfontan/go-git v0.0.0-20190321162938-b40af0bc1b6d/go.mod h1:Vtut8izDyrM8BUVQnzJ+YvmNcem2J89EmfZYCkLokZk=
 github.com/kevinburke/ssh_config v0.0.0-20180830205328-81db2a75821e h1:RgQk53JHp/Cjunrr1WlsXSZpqXn+uREuHvUVcK82CV8=
