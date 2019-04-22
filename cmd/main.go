@@ -5,10 +5,11 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/jfontan/borges"
+
+	"net/url"
 
 	goborges "github.com/src-d/go-borges"
 	"github.com/src-d/go-borges/siva"
@@ -51,7 +52,12 @@ func main() {
 	}
 
 	for _, r := range list {
-		id := strings.TrimLeft(r, "https://")
+		u, err := url.Parse(r)
+		if err != nil {
+			panic(err)
+		}
+		id := u.Hostname() + u.EscapedPath()
+
 		println("downloading", id)
 		start := time.Now()
 		err = DownloadRepo(library, tmpRepos, id, r)
